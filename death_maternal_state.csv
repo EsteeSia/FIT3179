@@ -1,4 +1,4 @@
-state,date,abs,rate,lat,long
+state,date,abs,rate,latitude,longitude
 Johor,1/1/2000,13,19.4,1.466,103.75
 Johor,1/1/2001,9,14.7,1.466,103.75
 Johor,1/1/2002,12,20.1,1.466,103.75
