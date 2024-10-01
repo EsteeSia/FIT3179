@@ -1,0 +1,97 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "A scatterplot showing the relationship between the number of maternal deaths and maternal mortality rate, with a trendline based on selected data but extending across the entire chart.",
+    "title": "Relationship between Maternal Deaths and Maternal Mortality Rate",
+    "data": {
+      "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
+    },
+    "params": [
+      {
+        "name": "State_selection",
+        "bind": {
+          "input": "select",
+          "options": [null, "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Perak", "Perlis", "Pulau Pinang", "Sabah", "Sarawak", "Selangor", "Terengganu", "W.P. Kuala Lumpur", "W.P. Labuan", "W.P. Putrajaya"],
+          "labels": ["Show All", "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Perak", "Perlis", "Pulau Pinang", "Sabah", "Sarawak", "Selangor", "Terengganu", "W.P. Kuala Lumpur", "W.P. Labuan", "W.P. Putrajaya"],
+          "name": "Select State: "
+        }
+      }
+    ],
+    "transform": [
+      {
+        "calculate": "year(datum.date)",
+        "as": "year"
+      }
+    ],
+    "vconcat": [
+      {
+        "width": 600,
+        "height": 400,
+        "layer": [
+          {
+            "mark": {"type": "circle", "size": 60, "opacity": 0.6},
+            "encoding": {
+              "x": {
+                "field": "abs",
+                "type": "quantitative",
+                "title": "Number of maternal deaths",
+                "scale": {"zero": false}
+              },
+              "y": {
+                "field": "rate",
+                "type": "quantitative",
+                "title": "Maternal mortality rate",
+                "scale": {"zero": false}
+              },
+              "color": {
+                "field": "state",
+                "type": "nominal",
+                "scale": {"scheme": "category20"}
+              },
+              "tooltip": [
+                {"field": "state", "title": "State", "type": "nominal"},
+                {"field": "abs", "type": "quantitative", "title": "Maternal deaths", "format": ","},
+                {"field": "rate", "type": "quantitative", "title": "Mortality rate", "format": ".2f"},
+                {"field": "year", "type": "quantitative", "title": "Year"}
+              ]
+            },
+            "transform": [
+              {
+                "filter": "State_selection == null || datum.state == State_selection"
+              }
+            ]
+          },
+          {
+            "mark": {"type": "line", "color": "red", "strokeDash": [6, 4], "strokeWidth": 1.5},
+            "transform": [
+              {
+                "filter": "State_selection == null || datum.state == State_selection"
+              },
+              {
+                "regression": "rate",
+                "on": "abs",
+                "method": "linear"
+              }
+            ],
+            "encoding": {
+              "x": {"field": "abs", "type": "quantitative"},
+              "y": {"field": "rate", "type": "quantitative"}
+            }
+          },
+          {
+            "mark": {"type": "text", "dy": -10, "dx": 5, "fontSize": 8},
+            "encoding": {
+              "x": {"field": "abs", "type": "quantitative"},
+              "y": {"field": "rate", "type": "quantitative"},
+              "text": {"field": "year", "type": "quantitative"},
+              "color": {"value": "black"}
+            },
+            "transform": [
+              {
+                "filter": "State_selection == null || datum.state == State_selection"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
