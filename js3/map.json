@@ -1,0 +1,116 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 800,
+  "height": 450,
+  "title": "Maternal Mortality in Malaysia by Year",
+  "projection": {
+    "type": "equirectangular",
+    "center": [109, 4],
+    "scale": 2000
+  },
+  "params": [
+    {
+      "name": "year_selection",
+      "value": 2021,
+      "bind": {
+        "input": "select",
+        "options": [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022],
+        "labels": ["2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022"],
+        "name": "Select Year:"
+      }
+    }
+  ],
+  "layer": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/refs/heads/main/output.json",
+        "format": {"type": "topojson", "feature": "MYSADM1gbOpen"}
+      },
+      "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/refs/heads/main/ne_10m_ocean.json",
+        "format": {"type": "topojson", "feature": "ne_10m_ocean"}
+      },
+      "mark": {"type": "geoshape", "fill": "#e6f3ff"}
+    },
+    {
+      "data": {
+        "graticule": {
+          "step": [1, 1]
+        }
+      },
+      "mark": {"type": "geoshape", "fill": null, "stroke": "lightgray"}
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/refs/heads/main/death_maternal_state.csv"
+      },
+      "transform": [
+        {"calculate": "year(datum.date)", "as": "year"},
+        {"filter": "datum.year == year_selection"}
+      ],
+      "mark": {"type": "circle", "tooltip": {"content": "data"}},
+      "encoding": {
+        "longitude": {"field": "longitude", "type": "quantitative"},
+        "latitude": {"field": "latitude", "type": "quantitative"},
+        "size": {
+          "field": "abs",
+          "type": "quantitative",
+          "title": "Number of Maternal Deaths",
+          "scale": {"domain": [0, 100], "range": [20, 1000]}
+        },
+        "color": {
+          "field": "rate",
+          "type": "quantitative",
+          "title": "Maternal Mortality Rate",
+          "scale": {
+            "type": "threshold",
+            "domain": [50, 100, 300],
+            "range": ["#ffd1dc", "#ffb6c1", "#ff69b4", "#ff1493"]
+          }
+        },
+        "tooltip": [
+          {"field": "state", "type": "nominal", "title": "State"},
+          {"field": "rate", "type": "quantitative", "title": "Maternal Mortality Rate", "format": ".2f"},
+          {"field": "abs", "type": "quantitative", "title": "Number of Maternal Deaths"}
+        ]
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/refs/heads/main/death_maternal_state.csv"
+      },
+      "transform": [
+        {"calculate": "year(datum.date)", "as": "year"},
+        {"filter": "datum.year == year_selection"},
+        {
+          "window": [{"op": "rank", "as": "rank"}],
+          "sort": [{"field": "rate", "order": "descending"}]
+        },
+        {"filter": "datum.rank == 1"},
+        {
+          "calculate": "datum.state + ' has the highest maternal mortality rate.'",
+          "as": "annotation_text"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "top",
+        "dx": 10,
+        "dy": 10,
+        "fontSize": 12
+      },
+      "encoding": {
+        "text": {"field": "annotation_text", "type": "nominal"},
+        "x": {"value": 0},
+        "y": {"value": 0}
+      }
+    }
+  ],
+  "config": {
+    "background": "#f0f8ff"
+  }
+}

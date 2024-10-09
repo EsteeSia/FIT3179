@@ -1,0 +1,158 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 800,
+    "height": 500,
+    "title": "Maternal Mortality Rate and Deaths by State over Time",
+    "data": {
+      "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/refs/heads/main/death_maternal_state.csv"
+    },
+    "params": [
+      {
+        "name": "selectedState",
+        "value": "Johor",
+        "bind": {
+          "input": "select",
+          "options": [
+            "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", 
+            "Perak", "Perlis", "Pulau Pinang", "Sabah", "Sarawak", "Selangor", 
+            "Terengganu", "W.P. Kuala Lumpur", "W.P. Labuan", "W.P. Putrajaya"
+          ],
+          "labels": [
+            "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", 
+            "Perak", "Perlis", "Pulau Pinang", "Sabah", "Sarawak", "Selangor", 
+            "Terengganu", "W.P. Kuala Lumpur", "W.P. Labuan", "W.P. Putrajaya"
+          ],
+          "name": "Select State"
+        }
+      }
+    ],
+    "transform": [
+      { "filter": "datum.state == selectedState" },
+      { "calculate": "year(datum.date)", "as": "year" }
+    ],
+    "layer": [
+      {
+        "mark": {
+          "type": "area",
+          "line": true,
+          "stroke": "#FFB6C1"
+        },
+        "encoding": {
+          "x": {
+            "field": "year",
+            "type": "ordinal",
+            "title": "Year"
+          },
+          "y": {
+            "field": "rate",
+            "type": "quantitative",
+            "title": "Maternal Mortality Rate (per 100k births)",
+            "axis": {
+              "titleColor": "black",
+              "labelColor": "black"
+            }
+          },
+          "color": {
+            "value": "#FFB6C1"
+          }
+        }
+      },
+      {
+        "mark": {
+          "type": "area",
+          "line": true,
+          "stroke": "#FF69B4"
+        },
+        "encoding": {
+          "x": {
+            "field": "year",
+            "type": "ordinal"
+          },
+          "y": {
+            "field": "abs",
+            "type": "quantitative",
+            "title": "Number of Maternal Deaths",
+            "axis": {
+              "titleColor": "black",
+              "labelColor": "black"
+            }
+          },
+          "color": {
+            "value": "#FF69B4"
+          }
+        }
+      },
+      {
+        "mark": {"type": "rule", "color": "gray"},
+        "encoding": {
+          "x": {"field": "year", "type": "ordinal"}
+        },
+        "transform": [{"filter": {"param": "hover", "empty": false}}]
+      },
+      {
+        "mark": {"type": "circle", "opacity": 0},
+        "encoding": {
+          "x": {"field": "year", "type": "ordinal"},
+          "opacity": {"value": 0},
+          "tooltip": [
+            {"field": "state", "type": "nominal", "title": "State"},
+            {"field": "year", "type": "ordinal", "title": "Year"},
+            {"field": "rate", "type": "quantitative", "title": "Maternal Mortality Rate", "format": ".2f"},
+            {"field": "abs", "type": "quantitative", "title": "Number of Maternal Deaths"}
+          ]
+        },
+        "params": [{
+          "name": "hover",
+          "select": {
+            "type": "point",
+            "fields": ["year"],
+            "nearest": true,
+            "on": "mouseover",
+            "clear": "mouseout"
+          }
+        }]
+      },
+      {
+        "mark": {"type": "circle", "size": 50},
+        "encoding": {
+          "x": {"field": "year", "type": "ordinal"},
+          "y": {"field": "rate", "type": "quantitative"},
+          "color": {"value": "#FFB6C1"},
+          "opacity": {
+            "condition": {"param": "hover", "value": 1},
+            "value": 0
+          }
+        }
+      },
+      {
+        "mark": {"type": "circle", "size": 50},
+        "encoding": {
+          "x": {"field": "year", "type": "ordinal"},
+          "y": {"field": "abs", "type": "quantitative"},
+          "color": {"value": "#FF69B4"},
+          "opacity": {
+            "condition": {"param": "hover", "value": 1},
+            "value": 0
+          }
+        }
+      }
+    ],
+    "encoding": {
+      "color": {
+        "field": "measure",
+        "type": "nominal",
+        "scale": {
+          "domain": ["Maternal Mortality Rate", "Number of Maternal Deaths"],
+          "range": ["#FFB6C1", "#FF69B4"]
+        },
+        "legend": {
+          "title": "Legend",
+          "labelFontSize": 12,
+          "labelColor": "black"
+        }
+      }
+    },
+    "config": {
+      "view": { "stroke": "transparent" }
+    }
+  }
