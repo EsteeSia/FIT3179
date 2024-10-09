@@ -97,11 +97,11 @@
       ],
       "mark": {
         "type": "text",
-        "align": "left",
-        "baseline": "top",
-        "dx": 10,
-        "dy": 10,
-        "fontSize": 12
+        "dx": 600,
+        "dy": 380,
+        "fontSize": 10,
+        "fontWeight": "bold",
+        "color": "orangered"
       },
       "encoding": {
         "text": {"field": "annotation_text", "type": "nominal"},
