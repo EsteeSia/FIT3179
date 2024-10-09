@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maternal Death Rate Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+        .vis-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .vis {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Maternal Death Rate Dashboard in Malaysia</h1>
+    <div class="vis-container">
+        <!-- Map Visualization -->
+        <div id="map-vis" class="vis"></div>
+
+        <!-- Scatterplot and Treemap Visualization Layer -->
+        <div id="scatter-treemap-container" class="vis">
+            <div id="scatter-vis" style="margin-bottom: 20px;"></div>
+            <div id="treemap-vis"></div>
+        </div>
+
+        <!-- Area Chart Visualization -->
+        <div id="area-vis" class="vis"></div>
+    </div>
+
+    <script type="text/javascript">
+        // Map Visualization Spec
+        var mapSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "width": 800,
+            "height": 450,
+            "title": "Maternal Death Rate in Malaysia by State",
+            "projection": {
+                "type": "equirectangular",
+                "center": [109, 4],
+                "scale": 2000
+            },
+            "layer": [
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/refs/heads/main/geoBoundaries-MYS-ADM1.topojson",
+                        "format": {"type": "topojson", "feature": "MYSADM1gbOpen"}
+                    },
+                    "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
+                },
+                {
+                    "data": {
+                        "graticule": {
+                            "step": [1, 1]
+                        }
+                    },
+                    "mark": {"type": "geoshape", "fill": null, "stroke": "lightgray"}
+                },
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
+                    },
+                    "mark": {"type": "circle", "tooltip": {"content": "data"}},
+                    "encoding": {
+                        "longitude": {"field": "longitude", "type": "quantitative"},
+                        "latitude": {"field": "latitude", "type": "quantitative"},
+                        "size": {
+                            "field": "rate",
+                            "type": "quantitative",
+                            "title": "Maternal Death Rate",
+                            "scale": {"domain": [0, 350]}
+                        },
+                        "color": {
+                            "field": "rate",
+                            "type": "quantitative",
+                            "title": "Maternal Death Rate",
+                            "scale": {"scheme": "reds"}
+                        }
+                    }
+                }
+            ]
+        };
+
+        // Scatterplot Spec
+        var scatterSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "Scatterplot: Number of Maternal Deaths vs. Maternal Mortality Rate",
+            "title": "Relationship between Maternal Deaths and Mortality Rate",
+            "data": {
+                "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
+            },
+            "width": 600,
+            "height": 400,
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "abs", "type": "quantitative", "title": "Number of Maternal Deaths"},
+                "y": {"field": "rate", "type": "quantitative", "title": "Maternal Mortality Rate"},
+                "color": {"field": "state", "type": "nominal"},
+                "tooltip": [
+                    {"field": "state", "title": "State"},
+                    {"field": "abs", "title": "Deaths"},
+                    {"field": "rate", "title": "Mortality Rate"}
+                ]
+            }
+        };
+
+        // Treemap Spec
+        var treemapSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "width": 800,
+            "height": 500,
+            "title": "Maternal Mortality Rate by State Over Time",
+            "data": {
+                "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
+            },
+            "transform": [
+                {
+                    "window": [{"op": "rank", "as": "rank"}],
+                    "sort": [{"field": "rate", "order": "descending"}]
+                }
+            ],
+            "mark": "rect",
+            "encoding": {
+                "x": {"field": "state", "type": "nominal"},
+                "y": {"field": "rate", "type": "quantitative"},
+                "color": {"field": "rate", "type": "quantitative"},
+                "tooltip": [
+                    {"field": "state", "type": "nominal", "title": "State"},
+                    {"field": "rate", "type": "quantitative", "title": "Rate"}
+                ]
+            }
+        };
+
+        // Area Chart Spec
+        var areaSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "width": 800,
+            "height": 500,
+            "title": "Maternal Mortality Rate Over Time",
+            "data": {
+                "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
+            },
+            "mark": "area",
+            "encoding": {
+                "x": {"field": "date", "type": "temporal", "title": "Year"},
+                "y": {"field": "rate", "type": "quantitative", "title": "Mortality Rate"},
+                "color": {"field": "state", "type": "nominal"},
+                "tooltip": [
+                    {"field": "state", "title": "State"},
+                    {"field": "rate", "title": "Mortality Rate"}
+                ]
+            }
+        };
+
+        // Embed the visualizations
+        vegaEmbed('#map-vis', mapSpec).catch(console.error);
+        vegaEmbed('#scatter-vis', scatterSpec).catch(console.error);
+        vegaEmbed('#treemap-vis', treemapSpec).catch(console.error);
+        vegaEmbed('#area-vis', areaSpec).catch(console.error);
+    </script>
+</body>
+</html>
