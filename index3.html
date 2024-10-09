@@ -1,168 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maternal Death Rate Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-    <style>
-        .vis-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .vis {
-            margin: 20px;
-        }
-    </style>
+  <title>FIT3179 Data Visualisation 2</title>
+    <!-- Import Vega & Vega-Lite -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
+
+  <!-- Import pure.css -->
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Google font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- CSS file -->
+  <link rel="stylesheet" type="text/css" href="css/styles.css" media="all">
+
 </head>
+
 <body>
-    <h1>Maternal Death Rate Dashboard in Malaysia</h1>
-    <div class="vis-container">
-        <!-- Map Visualization -->
-        <div id="map-vis" class="vis"></div>
+  
+  <div class = "page">
 
-        <!-- Scatterplot and Treemap Visualization Layer -->
-        <div id="scatter-treemap-container" class="vis">
-            <div id="scatter-vis" style="margin-bottom: 20px;"></div>
-            <div id="treemap-vis"></div>
-        </div>
-
-        <!-- Area Chart Visualization -->
-        <div id="area-vis" class="vis"></div>
+    <!-- pure grid group-->
+    <div class = "pure-g" style = "text-align: center;">
+      <div class = "pure-u-1-1">
+          <!-- Title of the page-->
+          <h1>Annual Maternal Deaths by State in Malaysia</h1>
+      </div>
     </div>
 
-    <script type="text/javascript">
-        // Map Visualization Spec
-        var mapSpec = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 800,
-            "height": 450,
-            "title": "Maternal Death Rate in Malaysia by State",
-            "projection": {
-                "type": "equirectangular",
-                "center": [109, 4],
-                "scale": 2000
-            },
-            "layer": [
-                {
-                    "data": {
-                        "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/refs/heads/main/geoBoundaries-MYS-ADM1.topojson",
-                        "format": {"type": "topojson", "feature": "MYSADM1gbOpen"}
-                    },
-                    "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
-                },
-                {
-                    "data": {
-                        "graticule": {
-                            "step": [1, 1]
-                        }
-                    },
-                    "mark": {"type": "geoshape", "fill": null, "stroke": "lightgray"}
-                },
-                {
-                    "data": {
-                        "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
-                    },
-                    "mark": {"type": "circle", "tooltip": {"content": "data"}},
-                    "encoding": {
-                        "longitude": {"field": "longitude", "type": "quantitative"},
-                        "latitude": {"field": "latitude", "type": "quantitative"},
-                        "size": {
-                            "field": "rate",
-                            "type": "quantitative",
-                            "title": "Maternal Death Rate",
-                            "scale": {"domain": [0, 350]}
-                        },
-                        "color": {
-                            "field": "rate",
-                            "type": "quantitative",
-                            "title": "Maternal Death Rate",
-                            "scale": {"scheme": "reds"}
-                        }
-                    }
-                }
-            ]
-        };
+    <!-- pure grid group-->
+    <!-- Map-->
+    <div class = "pure-g">
+      <div class = "pure-u-1-1">
+        <h2>Discovering Malaysia: Maternal Deaths at a Glance</h2>
+        <br>
+        <div class = "pure-u-1-1">
+          <div id = "map" class = "vis-container"></div>
+        </div>
+      </div>
+    </div>
+    <!-- end pure grid group-->
+    <br>
 
-        // Scatterplot Spec
-        var scatterSpec = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "description": "Scatterplot: Number of Maternal Deaths vs. Maternal Mortality Rate",
-            "title": "Relationship between Maternal Deaths and Mortality Rate",
-            "data": {
-                "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
-            },
-            "width": 600,
-            "height": 400,
-            "mark": "point",
-            "encoding": {
-                "x": {"field": "abs", "type": "quantitative", "title": "Number of Maternal Deaths"},
-                "y": {"field": "rate", "type": "quantitative", "title": "Maternal Mortality Rate"},
-                "color": {"field": "state", "type": "nominal"},
-                "tooltip": [
-                    {"field": "state", "title": "State"},
-                    {"field": "abs", "title": "Deaths"},
-                    {"field": "rate", "title": "Mortality Rate"}
-                ]
-            }
-        };
+    <!-- Header for Scatterplot-->
+    <div class = "pure-g">
+      <div class = "pure-u-1-1">
+        <h2>Relationship between Maternal Deaths and Maternal Mortality Rate</h2>
+        <br>
+        <div class = "pure-u-1-1">
+          <div id = "scatterplot" class = "vis-container"></div>
+        </div>
+      </div>
+    </div>
+    <br>
 
-        // Treemap Spec
-        var treemapSpec = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 800,
-            "height": 500,
-            "title": "Maternal Mortality Rate by State Over Time",
-            "data": {
-                "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
-            },
-            "transform": [
-                {
-                    "window": [{"op": "rank", "as": "rank"}],
-                    "sort": [{"field": "rate", "order": "descending"}]
-                }
-            ],
-            "mark": "rect",
-            "encoding": {
-                "x": {"field": "state", "type": "nominal"},
-                "y": {"field": "rate", "type": "quantitative"},
-                "color": {"field": "rate", "type": "quantitative"},
-                "tooltip": [
-                    {"field": "state", "type": "nominal", "title": "State"},
-                    {"field": "rate", "type": "quantitative", "title": "Rate"}
-                ]
-            }
-        };
+    <!-- Header for Treemap-->
+    <div class = "pure-g">
+      <div class = "pure-u-1-1">
+        <h2>Maternal Mortality Rate by State over Time</h2>
+        <br>
+        <div class = "pure-u-1-1">
+          <div id = "treemap" class = "vis-container"></div>
+        </div>
+      </div>
+    </div>
+    <br>
 
-        // Area Chart Spec
-        var areaSpec = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 800,
-            "height": 500,
-            "title": "Maternal Mortality Rate Over Time",
-            "data": {
-                "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
-            },
-            "mark": "area",
-            "encoding": {
-                "x": {"field": "date", "type": "temporal", "title": "Year"},
-                "y": {"field": "rate", "type": "quantitative", "title": "Mortality Rate"},
-                "color": {"field": "state", "type": "nominal"},
-                "tooltip": [
-                    {"field": "state", "title": "State"},
-                    {"field": "rate", "title": "Mortality Rate"}
-                ]
-            }
-        };
+    <!-- Header for Area Chart-->
+    <div class = "pure-g">
+      <div class = "pure-u-1-1">
+        <h2>Discovering Malaysia: Maternal Deaths by State over Time</h2>
+        <br>
+        <div class = "pure-u-1-1">
+          <div id = "areachart" class = "vis-container"></div>
+        </div>
+      </div>
+    </div>
+    <br>
 
-        // Embed the visualizations
-        vegaEmbed('#map-vis', mapSpec).catch(console.error);
-        vegaEmbed('#scatter-vis', scatterSpec).catch(console.error);
-        vegaEmbed('#treemap-vis', treemapSpec).catch(console.error);
-        vegaEmbed('#area-vis', areaSpec).catch(console.error);
-    </script>
+  </div>
+
+  <script type="text/javascript">
+    var specVis1 = "js3/map.json";
+    var specVis2 = "js3/scatterplot.json";
+    var specVis3 = "js3/treemap.json";
+    var specVis4 = "js3/areachart.json";
+
+    vegaEmbed('#map', specVis1).then(function(result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
+
+    vegaEmbed('#scatterplot', specVis2).then(function(result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
+
+    vegaEmbed('#treemap', specVis3).then(function(result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
+
+    vegaEmbed('#areachart', specVis4).then(function(result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
+
+  </script>
+
 </body>
 </html>
