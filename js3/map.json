@@ -2,7 +2,6 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "width": 800,
   "height": 450,
-  "title": "Maternal Mortality in Malaysia by Year",
   "projection": {
     "type": "equirectangular",
     "center": [109, 4],
