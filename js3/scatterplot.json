@@ -1,7 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "description": "A scatterplot showing the relationship between the number of maternal deaths and maternal mortality rate, with a trendline based on selected data but extending across the entire chart.",
-  "title": "Relationship between Maternal Deaths and Maternal Mortality Rate",
   "data": {
     "url": "https://raw.githubusercontent.com/EsteeSia/FIT3179/main/death_maternal_state.csv"
   },
