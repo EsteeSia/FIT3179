@@ -17,34 +17,43 @@
   <h2>January 2000 to January 2022</h2>
   
   <div class="container">
-    <div class="chart">
-      <div id="map"></div> 
+    <div class="full-width-chart">
+        <div id="map"></div>
     </div>
-
-    <div class="chart">
-      <div id="scatterplot"></div> 
+    
+    <div class="chart-container">
+        <div class="chart">
+            <div id="scatterplot"></div>
+        </div>
+        <div class="chart-text">
+            <h3>Relationship between Maternal Deaths and Mortality Rate</h3>
+            <p>This scatterplot illustrates the correlation between the number of maternal deaths and the maternal mortality rate across different states in Malaysia. Each point represents a state, with its position indicating both the number of deaths and the corresponding mortality rate. The visualization helps identify patterns and potential outliers in maternal health outcomes across the country.</p>
+            <p>Observations from this chart can guide policymakers in targeting healthcare interventions to states with higher mortality rates or numbers of deaths.</p>
+        </div>
     </div>
-
-    <div class="chart">
-      <div id="treemap"></div> 
+    
+    <div class="chart-container">
+        <div class="chart">
+            <div id="treemap"></div>
+        </div>
+        <div class="chart-text">
+            <h3>Maternal Mortality Rate by State</h3>
+            <p>This treemap provides a hierarchical view of maternal mortality rates across Malaysian states. The size of each rectangle corresponds to the mortality rate in that state, offering a quick visual comparison of maternal health outcomes between different regions.</p>
+            <p>This visualization is particularly useful for identifying states that may require more focused healthcare interventions or additional resources to improve maternal health outcomes.</p>
+        </div>
     </div>
-
-    <div class="chart">
-      <div id="areachart"></div> 
+    
+    <div class="full-width-chart">
+        <div id="areachart"></div>
     </div>
-
-    <!-- Line chart with description -->
-    <div class="chart">
-      <div id="scatterplot"></div>
+    
+    <div class="footer">
+        <p>Created and Designed By: Estee Sia Yin Tse</p>
+        <p>Last Updated: 9th October 2024</p>
+        <p>Dataset Author: Department of Statistics Malaysia (DOSM)</p>
+        <p>Data Source: <a href="https://open.dosm.gov.my/data-catalogue/deaths_maternal_state?state=selangor&visual=table" target="_blank">https://data.gov.my/data-catalogue/arrivals_soe</a></p>
     </div>
-
-    <h3>
-      Created and Designed By: Estee Sia Yin Tse<br>
-      Last Updated: 9th October 2024<br>
-      Dataset Author: o Department of Statistics Malaysia (DOSM)<br>
-      Data Source: <a href="https://open.dosm.gov.my/data-catalogue/deaths_maternal_state?state=selangor&visual=table" target="_blank">https://data.gov.my/data-catalogue/arrivals_soe</a>
-    </h3>
-  </div>
+</div>
 
 <script type="text/javascript">
   var specMap = "js3/map.json";
